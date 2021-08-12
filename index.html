@@ -7,37 +7,46 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap" rel="stylesheet">
 
+
 	<script>
 		// document.querySelector('meta[name="description"]').setAttribute("content", _desc);
 		// https://www.markmakes.com/dynamically-create-og-images-from-text/
-
+		var str, o, d, start, end, diff;
 		var request = new XMLHttpRequest;
 		request.open('GET', 'http://worldtimeapi.org/api/timezone/Europe/Kiev', true);
 		request.onload = function () {
 			str = request.responseText;
 			o = JSON.parse(str);
 			d = new Date(o.datetime);
-			start = new Date("June 07, 2021 18:07:00:00");
-			end = new Date("June 07, 2024 18:07:00:00");
+			// start = new Date("June 07, 2021 18:07:00:00");
+			start = new Date(2021, 6, 7, 18, 7, 0);
+			// end = new Date("June 07, 2024 18:07:00:00");
+			end = new Date(2024, 6, 7, 18, 7, 0);
 			diff = end - start; //миллисекунд в трех годах
-			diff=1000000000/diff; // постоянная Зеленского: деревьев в миллисекунду
+			diff = 1000000000 / diff; // постоянная Зеленского: деревьев в миллисекунду
 		};
 
-		var time = setInterval(function() {
-			prsh=d-start+performance.now();
+		var time = setInterval(function () {
 
-			ost=end-d-performance.now();
-			document.getElementById("d").innerHTML = "Процес триває: " + msToTime( prsh);
-			document.getElementById("d1").innerHTML = "Залишилося: " + msToTime(ost);
-			n_t=Math.round(prsh*diff);
+			if (start && end) {
 
-			document.getElementById("kz").innerHTML ="Повинно бути посаджено: " + ms(n_t) + " дерев";
-			document.getElementById("kz1").innerHTML = "Залишилось: " + ms(1000000000-n_t) + " дерев";
+				prsh = d - start + performance.now();
+
+				ost = end - d - performance.now();
+				document.getElementById("d").innerHTML = "Процес триває: " + msToTime(prsh);
+				document.getElementById("d1").innerHTML = "Залишилося: " + msToTime(ost);
+				n_t = Math.round(prsh * diff);
+
+				document.getElementById("kz").innerHTML = "Повинно бути посаджено: " + ms(n_t) + " дерев";
+				document.getElementById("kz1").innerHTML = "Залишилось: " + ms(1000000000 - n_t) + " дерев";
+
+			}
+
 		}, 10);
 
 		function copyToClip() {
 			function listener(e) {
-				st=new Date(Date.parse(d)+performance.now());
+				st = new Date(Date.parse(d) + performance.now());
 				let ho = st.getHours(); // текущий zac
 				ho = ho < 10 ? "0" + ho : ho;
 				let min = st.getMinutes(); // текущий zac
@@ -48,11 +57,13 @@
 				day = day < 10 ? "0" + day : day;
 				let month = st.getMonth() + 1; //текущий месяцж
 				month = month < 10 ? "0" + month : month;
-				st="Станом на "+ho +":"+min+":"+sec+" "+ day+"."+month+"."+st.getFullYear()+" повинно бути посаджено: " + ms(n_t) + " дерев";;
+				st = "Станом на " + ho + ":" + min + ":" + sec + " " + day + "." + month + "." + st.getFullYear() + " повинно бути посаджено: " + ms(n_t) + " дерев";
+				;
 				e.clipboardData.setData("text/html", st);
 				e.clipboardData.setData("text/plain", st);
 				e.preventDefault();
 			}
+
 			document.addEventListener("copy", listener);
 			document.execCommand("copy");
 			document.removeEventListener("copy", listener);
@@ -64,18 +75,18 @@
 					seconds = parseInt((duration / 1000) % 60),
 					minutes = parseInt((duration / (1000 * 60)) % 60),
 					hours = parseInt((duration / (1000 * 60 * 60)) % 24);
-			day = parseInt((duration / (1000 * 60 * 60*24)) % 2000);
+			day = parseInt((duration / (1000 * 60 * 60 * 24)) % 2000);
 			hours = (hours < 10) ? "0" + hours : hours;
 			minutes = (minutes < 10) ? "0" + minutes : minutes;
 			seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-			return day+" днів "+ hours + " годин " + minutes + " хвилин " + seconds + "." + milliseconds + " секунд";
+			return day + " днів " + hours + " годин " + minutes + " хвилин " + seconds + "." + milliseconds + " секунд";
 		}
 
 		function ms(n_t) {
-			n_t1=String(n_t);
-			n_t1= n_t1.slice(0,n_t1.length-3) + " " + n_t1.slice(n_t1.length-3);
-			n_t1= n_t1.slice(0,n_t1.length-7) + " " + n_t1.slice(n_t1.length-7);
+			n_t1 = String(n_t);
+			n_t1 = n_t1.slice(0, n_t1.length - 3) + " " + n_t1.slice(n_t1.length - 3);
+			n_t1 = n_t1.slice(0, n_t1.length - 7) + " " + n_t1.slice(n_t1.length - 7);
 			return n_t1;
 		}
 
